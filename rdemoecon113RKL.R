@@ -58,6 +58,20 @@ testcoefficients <-testsummary[["coefficients"]]
 write.csv(testcoefficients,'testsummary.csv')
 #the new CSV file will appear in wherever your default documents folder is. For me, on windows, it's in documents, while on linux it's in home. Dunno about OSX, sorry mac users.
 #outputting your results into a neat little csv is super useful for a lot of stuff, including writing research papers. It's much less work than laboriously transferring figures by hand into a spreadsheet or table. Work smarter, not harder.
+#you can also output directly to a .xls file, using the library writexl. Google it!
 
+#Visualization
+#Tables and numbers and coefficients are cool and all, but executives and nonspecialists, similarly to small children, like simple shapes and bright colors. 
+#We're going to go over how to produce those in R, using our handy, very powerful friend, ggplot2. ggplot2 is pretty complex, and can definitely be intimidating at first. 
+library(ggplot2)
+ggplot(data= wage1, mapping =aes(educ,wage))+ geom_point()
+#the function, ggplot, lets us define a dataset, our axis using the aes option, and then how to graph. we're using the default geom_point, but what happens when we change style or something?
+ggplot(data= wage1, mapping =aes(educ,wage))+ geom_point(size=5, shape=4)
+#neat, right? but we've got more powerful options available. What if we wanted to change the size of the point based on years of experience?
+ggplot(data= wage1, mapping =aes(educ,wage))+ geom_point(aes(size=exper), shape=6)
+#Neat!
+#How about adding a regression line?
+ggplot(data= wage1, mapping =aes(educ,wage))+ geom_point(aes(size=exper), shape=6)+geom_smooth(method=lm)
+#literally that easy. 
 
 #TBD: More dataframe manipulation, t-testing, cool libraries, visualization
