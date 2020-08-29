@@ -74,4 +74,41 @@ ggplot(data= wage1, mapping =aes(educ,wage))+ geom_point(aes(size=exper), shape=
 ggplot(data= wage1, mapping =aes(educ,wage))+ geom_point(aes(size=exper), shape=6)+geom_smooth(method=lm)
 #literally that easy. 
 
-#TBD: More dataframe manipulation, t-testing, cool libraries, visualization
+#what if we wanted to make a pi or bar chart to represent something like job demographics of our data
+#First, we'd need to get a count of how many people working in each industry. We can use the sum command for that, and initialize a new data frame specifically for this purpose
+SkilledTrades <- sum(wage1$trade)
+Construction <- sum(wage1$construc)
+NondurableManufacturing <- sum(wage1$ndurman)
+TransportAndMisc <- sum(wage1$trcommpu)
+Services <- sum(wage1$services)
+#next, we create a dataframe and just throw all these variables into it
+jobdemographics <- data.frame(SkilledTrades,Construction,NondurableManufacturing,TransportAndMisc,Services)
+#so, now we've got this cool data frame, but we can't use it for our next task. We need to refactor it. The key columns and rows aren't very usable to create a bar chart. 
+#we could do this by hand, but I'm lazy. We're going to use a library called "tidyr" handle it. 
+install.packages("tidyverse") #installing the library and loading it into the R script
+library(tidyr)
+#We're going to take our current data, and use the gather tool to take our column titles and convert them into a key column
+jobdemographics <- gather(jobdemographics,'SkilledTrades','Construction','NondurableManufacturing','TransportAndMisc','Services', key="jobsector",value="jobcount")
+#take a look at the difference now. Our data is now in a usable format, with actual, named key columns and row titles. Huzzah!
+#Now, we're actually gonna make that bar chart. 
+jobdemochart <- ggplot(data=jobdemographics, aes(x=jobsector,y=jobcount))+geom_bar(stat="identity")
+jobdemochart
+#take a look at the output in your plot window. Looks pretty boring, yeah? 
+#time to add colors. 
+jobdemochart <- ggplot(data=jobdemographics, aes(x=jobsector,y=jobcount, color=jobsector, fill=jobsector))+geom_bar(stat="identity")
+jobdemochart
+#Wow! Pretty!
+#For those of you who did well in trig, what happens when you convert cartesian coordinates to polar?
+jobdemochart <- ggplot(data=jobdemographics, aes(x=jobsector,y=jobcount, color=jobsector, fill=jobsector))+geom_bar(stat="identity")+coord_polar("y",start=0)
+jobdemochart
+#neat, but not a pie chart in the conventional sense. What if we made a single "bar" and used the polar conversion?
+jobdemochart <- ggplot(data=jobdemographics, aes(x="",y=jobcount, color=jobsector, fill=jobsector))+geom_bar(stat="identity")
+jobdemochart
+#neat. One bar, but still seperated by color. What happens if we convert this new updated single bar into polar?
+jobdemochart <-(jobdemochart+coord_polar("y",start=0))
+jobdemochart
+#neat! Shapes and colors are present. Still too many numbers for small children/executives though, and that grey background could go away.
+jobdemochart <- jobdemochart+theme_void()
+jobdemochart
+#No scary numbers, no ugly background. Just soft shapes and pleasant colors!
+
